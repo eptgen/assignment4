@@ -281,7 +281,7 @@ class Gaussians:
         ### YOUR CODE HERE ###
         # HINT: Can you extract the world to camera rotation matrix (W) from one of the inputs
         # of this function?
-        W = camera.get_full_projection_transform()  # (N, 3, 3)
+        W = camera.get_world_to_view_transform().get_matrix()[:, :3, :3]    # (N, 3, 3)
 
         ### YOUR CODE HERE ###
         # HINT: Can you find a function in this file that can help?
@@ -314,7 +314,7 @@ class Gaussians:
         ### YOUR CODE HERE ###
         # HINT: Do note that means_2D have units of pixels. Hence, you must apply a
         # transformation that moves points in the world space to screen space.
-        means_2D = (camera.transform_points(means_3D))[:, :2] # (N, 2)
+        means_2D = camera.transform_points_screen(means_3D) # (N, 2)
         return means_2D
 
     @staticmethod
