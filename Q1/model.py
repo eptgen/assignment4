@@ -247,7 +247,7 @@ class Gaussians:
         else:
 
             ### YOUR CODE HERE ###
-            SST = torch.unsqueeze(scales * scales, dim = 1) # (N, 1, 3)
+            SST = torch.unsqueeze(scales * scales, dim = 2) # (N, 1, 3)
             R = quaternion_to_matrix(quats) # (N, 3, 3)
             cov_3D = R @ (SST * torch.transpose(R, 1, 2))  # (N, 3, 3)
 
@@ -294,8 +294,6 @@ class Gaussians:
         # Post processing to make sure that each 2D Gaussian covers atleast approximately 1 pixel
         cov_2D[:, 0, 0] += 0.3
         cov_2D[:, 1, 1] += 0.3
-        
-        print("cov_2D", cov_2D)
 
         return cov_2D
 
