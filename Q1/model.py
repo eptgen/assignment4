@@ -281,7 +281,10 @@ class Gaussians:
         ### YOUR CODE HERE ###
         # HINT: Can you extract the world to camera rotation matrix (W) from one of the inputs
         # of this function?
-        W = camera.get_full_projection_transform().get_matrix()[:, :3, :3]    # (N, 3, 3)
+        W = camera.get_world_to_view_transform().get_matrix()[:, :3, :3]    # (N, 3, 3)
+        W2 = W = camera.get_full_projection_transform().get_matrix()[:, :3, :3]
+        print("W", W)
+        print("W2", W2)
 
         ### YOUR CODE HERE ###
         # HINT: Can you find a function in this file that can help?
