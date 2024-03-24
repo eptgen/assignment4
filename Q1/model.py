@@ -365,6 +365,7 @@ class Gaussians:
         dists = points_2D - means_2D # (N, H*W, 2)
         power = -1/2 * torch.sum((dists @ cov_2D_inverse) * dists, axis = 1)  # (N, H*W)
         print("power.shape", power.shape)
+        print("dists.shape", dists.shape)
 
         return power
 
