@@ -281,7 +281,7 @@ class Gaussians:
         ### YOUR CODE HERE ###
         # HINT: Can you extract the world to camera rotation matrix (W) from one of the inputs
         # of this function?
-        W = camera.get_world_to_view_transform().get_matrix()[:, :3, :3]    # (N, 3, 3)
+        W = camera.get_full_projection_transform().get_matrix()[:, :3, :3]    # (N, 3, 3)
 
         ### YOUR CODE HERE ###
         # HINT: Can you find a function in this file that can help?
@@ -364,8 +364,8 @@ class Gaussians:
         # HINT: Refer to README for a relevant equation
         dists = points_2D - means_2D # (N, H*W, 2)
         power = -1/2 * torch.sum((dists @ cov_2D_inverse) * dists, axis = 2)  # (N, H*W)
-        print("power.shape", power.shape)
-        print("dists.shape", dists.shape)
+        # print("power.shape", power.shape)
+        # print("dists.shape", dists.shape)
 
         return power
 
