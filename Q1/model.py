@@ -282,7 +282,6 @@ class Gaussians:
         # HINT: Can you extract the world to camera rotation matrix (W) from one of the inputs
         # of this function?
         W = (camera.get_world_to_view_transform().get_matrix())[:, :3, :3] # (N, 3, 3)
-        print("W", W)
 
         ### YOUR CODE HERE ###
         # HINT: Can you find a function in this file that can help?
@@ -295,6 +294,8 @@ class Gaussians:
         # Post processing to make sure that each 2D Gaussian covers atleast approximately 1 pixel
         cov_2D[:, 0, 0] += 0.3
         cov_2D[:, 1, 1] += 0.3
+        
+        print("cov_2D", cov_2D)
 
         return cov_2D
 
