@@ -526,7 +526,7 @@ class Scene:
         ### YOUR CODE HERE ###
         # HINT: Refer to README for a relevant equation.
         transmittance = torch.cumprod(one_minus_alphas, dim = 0)[:-1, :, :]  # (N, H, W)
-        print("T max", torch.max(transmittance))
+        print("T max", torch.min(transmittance))
 
         # Post processing for numerical stability
         transmittance = torch.where(transmittance < 1e-4, 0.0, transmittance)  # (N, H, W)
