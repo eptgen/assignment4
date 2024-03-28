@@ -427,8 +427,6 @@ class Scene:
         """
         ### YOUR CODE HERE ###
         idxs = torch.argsort(z_vals[z_vals >= 0])  # (N,)
-        print("z_vals", z_vals)
-        print("z_vals sorted", z_vals[idxs])
 
         return idxs
 
@@ -527,10 +525,10 @@ class Scene:
 
         ### YOUR CODE HERE ###
         # HINT: Refer to README for a relevant equation.
-        transmittance = torch.cumprod(one_minus_alphas, dim = 0)[:-1, :, :]  # (N, H, W)
+        transmittance = torch.cumprod(one_minus_alphas, dim = 0)  # (N+1, H, W)
 
         # Post processing for numerical stability
-        transmittance = torch.where(transmittance < 1e-4, 0.0, transmittance)  # (N, H, W)
+        transmittance = torch.where(transmittance < 1e-4, 0.0, transmittance)  # (N+1, H, W)
 
         return transmittance
 
