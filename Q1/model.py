@@ -473,8 +473,7 @@ class Scene:
 
         ### YOUR CODE HERE ###
         # HINT: Refer to README for a relevant equation.
-        alphas = torch.unsqueeze(opacities, 1) * power  # (N, H*W)
-        print("alpha min max", torch.min(alphas), torch.max(alphas))
+        alphas = torch.unsqueeze(opacities, 1) * exp_power  # (N, H*W)
         alphas = torch.reshape(alphas, (-1, H, W))  # (N, H, W)
 
         # Post processing for numerical stability
