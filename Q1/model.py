@@ -363,7 +363,7 @@ class Gaussians:
         ### YOUR CODE HERE ###
         # HINT: Refer to README for a relevant equation
         dists = points_2D - means_2D # (N, H*W, 2)
-        power = -1/2 * torch.sum((dists @ cov_2D_inverse) * dists, axis = 2)  # (N, H*W)
+        power = -1/2 * torch.sum(torch.squeeze(torch.unsqueeze(dists, 2) @ torch.unsqueeze(cov_2D_inverse, 1)) * dists, axis = 2)  # (N, H*W)
         # print("power.shape", power.shape)
         # print("dists.shape", dists.shape)
 
@@ -462,7 +462,7 @@ class Scene:
 
         ### YOUR CODE HERE ###
         # HINT: Can you find a function in this file that can help?
-        cov_2D_inverse = Gaussians.invert_cov_2D(cov_2D)  # (N, 2, 2) TODO: Verify shape
+        cov_2D_inverse = Gaussians.invert_cov_2D(cov_2D)  # (N, 2, 2)
 
         ### YOUR CODE HERE ###
         # HINT: Can you find a function in this file that can help?
