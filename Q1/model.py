@@ -247,7 +247,7 @@ class Gaussians:
         else:
 
             ### YOUR CODE HERE ###
-            SST = torch.unsqueeze(scales * scales, dim = 2) # (N, 1, 3)
+            SST = torch.unsqueeze(scales * scales, dim = 2) # (N, 3, 1)
             R = quaternion_to_matrix(quats) # (N, 3, 3)
             cov_3D = R @ (SST * torch.transpose(R, 1, 2))  # (N, 3, 3)
 
@@ -405,7 +405,7 @@ class Scene:
         ### YOUR CODE HERE ###
         # HINT: You can use get the means of 3D Gaussians self.gaussians and calculate
         # the depth using the means and the camera
-        z_vals = None  # (N,)
+        z_vals = camera.transform_points_screen(self.gaussians.means)[:, 2]  # (N,)
 
         return z_vals
 
@@ -426,7 +426,7 @@ class Scene:
         Please refer to the README file for more details.
         """
         ### YOUR CODE HERE ###
-        idxs = None  # (N,)
+        idxs = torch.argsort(z_vals[z_vals >= 0])  # (N,)
 
         return idxs
 
@@ -462,18 +462,18 @@ class Scene:
 
         ### YOUR CODE HERE ###
         # HINT: Can you find a function in this file that can help?
-        cov_2D_inverse = None  # (N, 2, 2) TODO: Verify shape
+        cov_2D_inverse = Gaussians.invert_cov_2D(cov_2D)  # (N, 2, 2) TODO: Verify shape
 
         ### YOUR CODE HERE ###
         # HINT: Can you find a function in this file that can help?
-        power = None  # (N, H*W)
+        power = Gaussians.evaluate_gaussian_2D(points_2D, means_2D, cov_2D_inverse):  # (N, H*W)
 
         # Computing exp(power) with some post processing for numerical stability
         exp_power = torch.where(power > 0.0, 0.0, torch.exp(power))
 
         ### YOUR CODE HERE ###
         # HINT: Refer to README for a relevant equation.
-        alphas = None  # (N, H*W)
+        alphas = torch.unsqueeze(opacities, 1) * power  # (N, H*W)
         alphas = torch.reshape(alphas, (-1, H, W))  # (N, H, W)
 
         # Post processing for numerical stability
@@ -525,7 +525,7 @@ class Scene:
 
         ### YOUR CODE HERE ###
         # HINT: Refer to README for a relevant equation.
-        transmittance = None  # (N, H, W)
+        transmittance = torch.cumprod(one_minus_alphas, dim = 0)[:-1, :, :]  # (N, H, W)
 
         # Post processing for numerical stability
         transmittance = torch.where(transmittance < 1e-4, 0.0, transmittance)  # (N, H, W)
@@ -573,23 +573,23 @@ class Scene:
 
         ### YOUR CODE HERE ###
         # HINT: Can you find a function in this file that can help?
-        means_2D = None  # (N, 2)
+        means_2D = Gaussians.compute_means_2D(means_3D, camera):  # (N, 2)
 
         ### YOUR CODE HERE ###
         # HINT: Can you find a function in this file that can help?
-        cov_2D = None  # (N, 2, 2)
+        cov_2D = self.gaussians.compute_cov_2D(means_3D, quats: torch.Tensor, scales, camera, img_size)  # (N, 2, 2)
 
         # Step 2: Compute alpha maps for each gaussian
 
         ### YOUR CODE HERE ###
         # HINT: Can you find a function in this file that can help?
-        alphas = None  # (N, H, W)
+        alphas = self.compute_alphas(opacities, means_2D, cov_2D, img_size)  # (N, H, W)
 
         # Step 3: Compute transmittance maps for each gaussian
 
         ### YOUR CODE HERE ###
         # HINT: Can you find a function in this file that can help?
-        transmittance = None  # (N, H, W)
+        transmittance = self.compute_transmittance(alphas)  # (N, H, W)
 
         # Some unsqueezing to set up broadcasting for vectorized implementation.
         # You can selectively comment these out if you want to compute things
@@ -603,15 +603,15 @@ class Scene:
 
         ### YOUR CODE HERE ###
         # HINT: Refer to README for a relevant equation
-        image = None  # (H, W, 3)
+        image = torch.sum(colours * alphas * transmittance, dim = 0)  # (H, W, 3)
 
         ### YOUR CODE HERE ###
         # HINT: Can you implement an equation inspired by the equation for colour?
-        depth = None  # (H, W, 1)
+        depth = torch.sum(z_vals * alphas * transmittance, dim = 0)  # (H, W, 1)
 
         ### YOUR CODE HERE ###
         # HINT: Can you implement an equation inspired by the equation for colour?
-        mask = None  # (H, W, 1)
+        mask = (depth > 0).type(torch.uint8)  # (H, W, 1)
 
         final_transmittance = transmittance[-1, ..., 0].unsqueeze(0)  # (1, H, W)
         return image, depth, mask, final_transmittance
