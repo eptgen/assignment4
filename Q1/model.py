@@ -427,7 +427,8 @@ class Scene:
         """
         ### YOUR CODE HERE ###
         idxs = torch.argsort(z_vals[z_vals >= 0])  # (N,)
-        print("z_vals", z_vals[idxs])
+        print("z_vals", z_vals)
+        print("z_vals sorted", z_vals[idxs])
 
         return idxs
 
