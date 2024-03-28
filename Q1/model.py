@@ -577,7 +577,7 @@ class Scene:
 
         ### YOUR CODE HERE ###
         # HINT: Can you find a function in this file that can help?
-        cov_2D = self.gaussians.compute_cov_2D(means_3D, quats: torch.Tensor, scales, camera, img_size)  # (N, 2, 2)
+        cov_2D = self.gaussians.compute_cov_2D(means_3D, quats, scales, camera, img_size)  # (N, 2, 2)
 
         # Step 2: Compute alpha maps for each gaussian
 
