@@ -155,7 +155,7 @@ class SDS:
         with torch.no_grad():
             ### YOUR CODE HERE ###
             epsilon = torch.randn(B, 4, self.H, self.W).cuda()
-            eps_hat = self.unet(self.vae.decode(latents) + epsilon, t, text_embeddings)
+            eps_hat = self.unet(self.vae.decode(latents).sample + epsilon, t, text_embeddings)
             noise_residual = torch.linalg.norm(eps_hat - epsilon)
 
             if text_embeddings_uncond is not None and guidance_scale != 1:
