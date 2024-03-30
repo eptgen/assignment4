@@ -154,7 +154,7 @@ class SDS:
         # predict the noise residual with unet, NO grad!
         with torch.no_grad():
             ### YOUR CODE HERE ###
-            epsilon = torch.randn(B, latents.shape[1], self.H, self.W)
+            epsilon = torch.randn(B, latents.shape[1], self.H, self.W).cuda()
             eps_hat = self.unet(epsilon, t, latents)
             noise_residual = torch.linalg.norm(eps_hat - epsilon)
 
