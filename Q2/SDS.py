@@ -169,6 +169,7 @@ class SDS:
         ### YOUR CODE HERE ###
 
 
-        loss = w * noise_residual
+        target = latents + w * noise_residual
+        loss = torch.linalg.norm(latents - target)
 
         return loss
