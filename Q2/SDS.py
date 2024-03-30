@@ -138,20 +138,25 @@ class SDS:
         Returns:
             loss (tensor): SDS loss
         """
-
+        
+        B = latents.shape[0]
+        
         # sample a timestep ~ U(0.02, 0.98) to avoid very high/low noise level
         t = torch.randint(
             self.min_step,
             self.max_step + 1,
-            (latents.shape[0],),
+            (B,),
             dtype=torch.long,
             device=self.device,
         )
+        noise_residual = None
 
         # predict the noise residual with unet, NO grad!
         with torch.no_grad():
             ### YOUR CODE HERE ###
- 
+            epsilon = torch.randn(B, latents.shape[1], self.H, self.W)
+            eps_hat = self.unet(epsilon, t, latents)
+            noise_residual = torch.linalg.norm(eps_hat - epsilon)
 
             if text_embeddings_uncond is not None and guidance_scale != 1:
                 ### YOUR CODE HERE ###
@@ -164,6 +169,6 @@ class SDS:
         ### YOUR CODE HERE ###
 
 
-        loss = 
+        loss = w * noise_residual
 
         return loss
