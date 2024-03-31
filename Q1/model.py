@@ -612,7 +612,7 @@ class Scene:
 
         ### YOUR CODE HERE ###
         # HINT: Can you implement an equation inspired by the equation for colour?
-        mask = (depth > 0).type(torch.uint8)  # (H, W, 1)
+        mask = torch.sum(alphas * transmittance, dim = 0)  # (H, W, 1)
 
         final_transmittance = transmittance[-1, ..., 0].unsqueeze(0)  # (1, H, W)
         return image, depth, mask, final_transmittance
