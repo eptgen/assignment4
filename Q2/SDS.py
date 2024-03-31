@@ -149,8 +149,6 @@ class SDS:
             dtype=torch.long,
             device=self.device,
         )
-        epsilon = None
-        eps_hat = None
 
         # predict the noise residual with unet, NO grad!
         with torch.no_grad():
@@ -172,6 +170,6 @@ class SDS:
 
         noise_residual = eps_hat - epsilon
         target = latents - w * grad_scale * noise_residual
-        loss = torch.linalg.norm(latents - target)
+        loss = F.mse_loss(latents, target)
 
         return loss
