@@ -160,12 +160,17 @@ def optimize_nerf(
                 text_cond = embeddings["default"]
             else:
                 ### YOUR CODE HERE ###
-                pass
-
+                pos_azi = abs(azimuth)
+                if pos_azi <= 45:
+                    text_cond = embeddings["front"]
+                elif 45 <= pos_azi and pos_azi <= 135:
+                    text_cond = embeddings["side"]
+                else:
+                    text_cond = embeddings["back"]
   
             ### YOUR CODE HERE ###
-            latents = 
-            loss = 
+            latents = sds.encode_imgs(pred_rgb)
+            loss = sds.sds_loss(latents, text_cond, text_uncond, 100, 1)
 
             # regularizations
             if args.lambda_entropy > 0:

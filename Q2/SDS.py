@@ -155,7 +155,9 @@ class SDS:
             ### YOUR CODE HERE ###
             epsilon = torch.randn_like(latents)
             latent_noise = self.scheduler.add_noise(latents, epsilon, t)
+            # unet call taken from https://github.com/huggingface/diffusers/blob/main/src/diffusers/pipelines/stable_diffusion/pipeline_stable_diffusion.py
             eps_hat = self.unet(latent_noise, t, encoder_hidden_states = text_embeddings).sample
+            # end unet call
 
             if text_embeddings_uncond is not None and guidance_scale != 1:
                 ### YOUR CODE HERE ###
@@ -170,7 +172,9 @@ class SDS:
 
 
         noise_residual = eps_hat - epsilon
+        # loss calculation taken from https://github.com/huggingface/diffusers/blob/main/src/diffusers/pipelines/stable_diffusion/pipeline_stable_diffusion.py
         target = (latents - w * grad_scale * noise_residual).detach()
         loss = F.mse_loss(latents.float(), target)
-
+        # end loss calculation
+        
         return loss
