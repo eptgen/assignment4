@@ -89,7 +89,7 @@ def optimize_mesh_texture(
         phi = random() * 90 # degrees above the plane
         R, T = look_at_view_transform(dist = dist, azim = theta, elev = phi)
         query_cameras.append(FoVPerspectiveCameras(
-            R=R, T=T, fov=60, device=args.device
+            R=R, T=T, fov=60, device=device
         ))
 
     # Step 4. Create optimizer training parameters
