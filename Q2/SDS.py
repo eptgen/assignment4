@@ -169,7 +169,7 @@ class SDS:
 
 
         noise_residual = eps_hat - epsilon
-        target = latents - w * grad_scale * noise_residual
-        loss = F.mse_loss(latents, target)
+        target = (latents - w * grad_scale * noise_residual).detach()
+        loss = F.mse_loss(latents.float(), target)
 
         return loss
