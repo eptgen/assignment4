@@ -159,7 +159,8 @@ class SDS:
 
             if text_embeddings_uncond is not None and guidance_scale != 1:
                 ### YOUR CODE HERE ###
-                pass
+                eps_hat_uncond = self.unet(latent_noise, t, encoder_hidden_states = text_embeddings_uncond).sample
+                eps_hat = eps_hat + guidance_scale * (eps_hat - eps_hat_uncond)
  
 
 
