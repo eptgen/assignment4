@@ -1,6 +1,7 @@
 import argparse
 import os
 import os.path as osp
+from random import random
 import time
 
 import numpy as np
@@ -81,10 +82,19 @@ def optimize_mesh_texture(
     # create a list of query cameras as the training set
     # Note: to create the dataset, you can either pre-define a list of query cameras as below or randomly sample a camera pose on the fly in the training loop.
     query_cameras = [] # optional
+    num_query_cameras = 50
+    for i in range(num_query_cameras):
+        theta = random() * 360 # degrees around the object
+        dist = random() * 2 + 1 # distance from the object
+        phi = random() * 90 # degrees above the plane
+        R, T = look_at_view_transform(dist = dist, azim = theta, elev = phi)
+        query_cameras.append(FoVPerspectiveCameras(
+            R=R, T=T, fov=60, device=args.device
+        ))
 
     # Step 4. Create optimizer training parameters
     optimizer = torch.optim.AdamW(color_field.parameters(), lr=5e-4, weight_decay=0)
-    total_iter = 2000
+    total_iter = 20
     scheduler = get_cosine_schedule_with_warmup(optimizer, 100, int(total_iter * 1.5))
 
     # Step 5. Training loop to optimize the texture map
@@ -100,11 +110,11 @@ def optimize_mesh_texture(
 
         # Forward pass
         # Render a randomly sampled camera view to optimize in this iteration
-        rend = 
+        rend = renderer(mesh, cameras = cameras, lights = lights)[0, ..., :3]
         # Encode the rendered image to latents
-        latents = 
+        latents = sds.encode_imgs(torch.permute(rend, (2, 0, 1)).unsqueeze(0))
         # Compute the loss
-        loss =
+        loss = sds.sds_loss(latents, embeddings["default"], embeddings["uncond"], 100, 1)
 
 
 
