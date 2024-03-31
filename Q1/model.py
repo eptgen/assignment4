@@ -605,6 +605,10 @@ class Scene:
         ### YOUR CODE HERE ###
         # HINT: Refer to README for a relevant equation
         image = torch.sum(colours * alphas * transmittance, dim = 0)  # (H, W, 3)
+        print(torch.max(image[:128, :128, :]))
+        print(torch.max(image[:128, 128:, :]))
+        print(torch.max(image[128:, :128, :]))
+        print(torch.max(image[128:, 128:, :]))
 
         ### YOUR CODE HERE ###
         # HINT: Can you implement an equation inspired by the equation for colour?
@@ -613,10 +617,6 @@ class Scene:
         ### YOUR CODE HERE ###
         # HINT: Can you implement an equation inspired by the equation for colour?
         mask = torch.sum(alphas * transmittance, dim = 0)  # (H, W, 1)
-        print(torch.max(mask[:128, :128, :]))
-        print(torch.max(mask[:128, 128:, :]))
-        print(torch.max(mask[128:, :128, :]))
-        print(torch.max(mask[128:, 128:, :]))
 
         final_transmittance = transmittance[-1, ..., 0].unsqueeze(0)  # (1, H, W)
         return image, depth, mask, final_transmittance
