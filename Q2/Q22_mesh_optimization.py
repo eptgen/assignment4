@@ -94,7 +94,7 @@ def optimize_mesh_texture(
 
     # Step 4. Create optimizer training parameters
     optimizer = torch.optim.AdamW(color_field.parameters(), lr=5e-4, weight_decay=0)
-    total_iter = 20
+    total_iter = 400
     scheduler = get_cosine_schedule_with_warmup(optimizer, 100, int(total_iter * 1.5))
 
     # Step 5. Training loop to optimize the texture map
