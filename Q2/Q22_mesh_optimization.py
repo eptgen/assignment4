@@ -110,7 +110,8 @@ def optimize_mesh_texture(
 
         # Forward pass
         # Render a randomly sampled camera view to optimize in this iteration
-        rend = renderer(mesh, cameras = cameras, lights = lights)[0, ..., :3]
+        random_camera = query_cameras[int(random() * len(query_cameras))]
+        rend = renderer(mesh, cameras = random_camera, lights = lights)[0, ..., :3]
         # Encode the rendered image to latents
         latents = sds.encode_imgs(torch.permute(rend, (2, 0, 1)).unsqueeze(0))
         # Compute the loss
