@@ -432,7 +432,6 @@ class Scene:
         while gzero_ind < z_vals.shape[0] and z_vals[idxs[gzero_ind]] < 0:
             gzero_ind += 1
         
-        print(z_vals[idxs])
         return idxs[gzero_ind:]
 
     def compute_alphas(self, opacities, means_2D, cov_2D, img_size):
@@ -613,6 +612,7 @@ class Scene:
         ### YOUR CODE HERE ###
         # HINT: Can you implement an equation inspired by the equation for colour?
         depth = torch.sum((alphas * transmittance) * z_vals, dim = 0)  # (H, W, 1)
+        depth = depth / torch.max(depth) # (H, W, 1)
 
         ### YOUR CODE HERE ###
         # HINT: Can you implement an equation inspired by the equation for colour?
