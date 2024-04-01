@@ -607,7 +607,7 @@ class Scene:
 
         ### YOUR CODE HERE ###
         # HINT: Refer to README for a relevant equation
-        print(torch.max(colours))
+        colours = colours / torch.max(colours)
         image = torch.sum((alphas * transmittance) * colours, dim = 0)  # (H, W, 3)
 
         ### YOUR CODE HERE ###
