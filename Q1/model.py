@@ -604,7 +604,7 @@ class Scene:
 
         ### YOUR CODE HERE ###
         # HINT: Refer to README for a relevant equation
-        image = torch.sum((alphas * transmittance) * colors, dim = 0)  # (H, W, 3)
+        image = torch.sum((alphas * transmittance) * colours, dim = 0)  # (H, W, 3)
 
         ### YOUR CODE HERE ###
         # HINT: Can you implement an equation inspired by the equation for colour?
