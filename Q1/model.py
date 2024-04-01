@@ -406,7 +406,7 @@ class Scene:
         ### YOUR CODE HERE ###
         # HINT: You can use get the means of 3D Gaussians self.gaussians and calculate
         # the depth using the means and the camera
-        z_vals = camera.transform_points_screen(self.gaussians.means)[:, 2]  # (N,)
+        z_vals = 1 / camera.transform_points_screen(self.gaussians.means)[:, 2]  # (N,)
 
         return z_vals
 
