@@ -613,6 +613,7 @@ class Scene:
         # HINT: Can you implement an equation inspired by the equation for colour?
         depth = torch.sum((alphas * transmittance) * z_vals, dim = 0)  # (H, W, 1)
         depth = depth / torch.max(depth) # (H, W, 1)
+        print(torch.max(depth))
 
         ### YOUR CODE HERE ###
         # HINT: Can you implement an equation inspired by the equation for colour?
