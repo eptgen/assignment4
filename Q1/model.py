@@ -604,15 +604,11 @@ class Scene:
 
         ### YOUR CODE HERE ###
         # HINT: Refer to README for a relevant equation
-        image = torch.sum(colours * alphas * transmittance, dim = 0)  # (H, W, 3)
-        print(torch.max(image[:128, :128, :]))
-        print(torch.max(image[:128, 128:, :]))
-        print(torch.max(image[128:, :128, :]))
-        print(torch.max(image[128:, 128:, :]))
+        image = torch.sum((alphas * transmittance) * colors, dim = 0)  # (H, W, 3)
 
         ### YOUR CODE HERE ###
         # HINT: Can you implement an equation inspired by the equation for colour?
-        depth = torch.sum(z_vals * alphas * transmittance, dim = 0)  # (H, W, 1)
+        depth = torch.sum((alphas * transmittance) * z_vals, dim = 0)  # (H, W, 1)
 
         ### YOUR CODE HERE ###
         # HINT: Can you implement an equation inspired by the equation for colour?
