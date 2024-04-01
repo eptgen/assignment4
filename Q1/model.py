@@ -427,9 +427,12 @@ class Scene:
         Please refer to the README file for more details.
         """
         ### YOUR CODE HERE ###
-        idxs = torch.argsort(z_vals[z_vals >= 0])  # (N,)
+        idxs = torch.argsort(z_vals) # (N,)
+        gzero_ind = 0
+        while gzero_ind < z_vals.shape[0] and z_vals[idxs[gzero_ind]] < 0:
+            gzero_ind += 1
 
-        return idxs
+        return idxs[gzero_ind:]
 
     def compute_alphas(self, opacities, means_2D, cov_2D, img_size):
         """
