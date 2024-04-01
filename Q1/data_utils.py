@@ -268,5 +268,5 @@ def colours_from_spherical_harmonics(spherical_harmonics, gaussian_dirs):
         SH_C3_5 * z * (xx - yy) * c14 + \
         SH_C3_6 * x * (xx - 3.0 * yy) * c15 # (N, 3)
     
-    colors += 0.5
-    return torch.clamp(colors, 0.0, 1.0)
+    color += 0.5
+    return torch.clamp(color, 0.0, 1.0)
