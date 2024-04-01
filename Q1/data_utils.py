@@ -231,6 +231,7 @@ def colours_from_spherical_harmonics(spherical_harmonics, gaussian_dirs):
     x = gaussian_dirs[:, 0] # (N,)
     y = gaussian_dirs[:, 1] # (N,)
     z = gaussian_dirs[:, 2] # (N,)
+    print(c1.shape)
     print((SH_C1 * y * c1).shape)
     print(color.shape)
     color = color - SH_C1 * y * c1 + SH_C1 * z * c2 - SH_C1 * x * c3 # (N, 3)
