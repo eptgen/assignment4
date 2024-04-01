@@ -10,6 +10,19 @@ from torch.utils.data import Dataset
 from pytorch3d.renderer.cameras import PerspectiveCameras, look_at_view_transform
 
 SH_C0 = 0.28209479177387814
+SH_C1 = 0.4886025119029199
+SH_C2_0 = 1.0925484305920792
+SH_C2_1 = -1.0925484305920792
+SH_C2_2 = 0.31539156525252005
+SH_C2_3 = -1.0925484305920792
+SH_C2_4 = 0.5462742152960396
+SH_C3_0 = -0.5900435899266435
+SH_C3_1 = 2.890611442640554
+SH_C3_2 = -0.4570457994644658
+SH_C3_3 = 0.3731763325901154
+SH_C3_4 = -0.4570457994644658
+SH_C3_5 = 1.445305721320277
+SH_C3_6 = -0.5900435899266435
 CMAP_JET = plt.get_cmap("jet")
 CMAP_MIN_NORM, CMAP_MAX_NORM = 5.0, 7.0
 
@@ -193,6 +206,8 @@ def colours_from_spherical_harmonics(spherical_harmonics, gaussian_dirs):
     """
     [Q 1.3.1] Computes view-dependent colour given spherical harmonic coefficients
     and direction vectors for each gaussian.
+    
+    NOTE: code copy-pasted and adapted from https://github.com/thomasantony/splat/blob/0d856a6accd60099dd9518a51b77a7bc9fd9ff6b/notes/00_Gaussian_Projection.ipynb
 
     Args:
         spherical_harmonics     :   A torch.Tensor of shape (N, 48) representing the
@@ -205,6 +220,50 @@ def colours_from_spherical_harmonics(spherical_harmonics, gaussian_dirs):
         colours                 :   A torch.Tensor of shape (N, 3) representing the view dependent
                                     RGB colour.
     """
-    ### YOUR CODE HERE ###
-    colours = None
-    return colours
+    
+    c0 = spherical_harmonics[:, :3] # (N, 3)
+    color = SH_C0 * c0 # (N, 3)
+
+    c1 = spherical_harmonics[:, 3:6] # (N, 3)
+    c2 = spherical_harmonics[:, 6:9] # (N, 3)
+    c3 = spherical_harmonics[:, 9:12] # (N, 3)
+
+    x = gaussian_dirs[:, 0] # (N,)
+    y = gaussian_dirs[:, 1] # (N,)
+    z = gaussian_dirs[:, 2] # (N,)
+    color = color - SH_C1 * y * c1 + SH_C1 * z * c2 - SH_C1 * x * c3 # (N, 3)
+    
+    c4 = spherical_harmonics[:, 12:15] # (N, 3)
+    c5 = spherical_harmonics[:, 15:18] # (N, 3)
+    c6 = spherical_harmonics[:, 18:21] # (N, 3)
+    c7 = spherical_harmonics[:, 21:24] # (N, 3)
+    c8 = spherical_harmonics[:, 24:27] # (N, 3)
+
+    (xx, yy, zz) = (x * x, y * y, z * z) # (N,)
+    (xy, yz, xz) = (x * y, y * z, x * z) # (N,)
+    
+    color = color +	SH_C2_0 * xy * c4 + \
+        SH_C2_1 * yz * c5 + \
+        SH_C2_2 * (2.0 * zz - xx - yy) * c6 + \
+        SH_C2_3 * xz * c7 + \
+        SH_C2_4 * (xx - yy) * c8 # (N, 3)
+
+    c9 = spherical_harmonics[:, 27:30] # (N, 3)
+    c10 = spherical_harmonics[:, 30:33] # (N, 3)
+    c11 = spherical_harmonics[:, 33:36] # (N, 3)
+    c12 = spherical_harmonics[:, 36:39] # (N, 3)
+    c13 = spherical_harmonics[:, 39:42] # (N, 3)
+    c14 = spherical_harmonics[:, 42:45] # (N, 3)
+    c15 = spherical_harmonics[:, 45:48] # (N, 3)
+
+    color = color + \
+        SH_C3_0 * y * (3.0 * xx - yy) * c9 + \
+        SH_C3_1 * xy * z * c10 + \
+        SH_C3_2 * y * (4.0 * zz - xx - yy) * c11 + \
+        SH_C3_3 * z * (2.0 * zz - 3.0 * xx - 3.0 * yy) * c12 + \
+        SH_C3_4 * x * (4.0 * zz - xx - yy) * c13 + \
+        SH_C3_5 * z * (xx - yy) * c14 + \
+        SH_C3_6 * x * (xx - 3.0 * yy) * c15 # (N, 3)
+    
+    colors += 0.5
+    return torch.clamp(colors, 0.0, 1.0)
