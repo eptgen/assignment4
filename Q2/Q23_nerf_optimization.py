@@ -169,7 +169,7 @@ def optimize_nerf(
                     text_cond = embeddings["back"]
   
             ### YOUR CODE HERE ###
-            latents = sds.encode_imgs(torch.nn.functional.interpolate(pred_rgb, (64, 64)))
+            latents = sds.encode_imgs(torch.nn.functional.interpolate(pred_rgb, (512, 512)))
             loss = sds.sds_loss(latents, text_cond, text_uncond, 100, 1)
 
             # regularizations
